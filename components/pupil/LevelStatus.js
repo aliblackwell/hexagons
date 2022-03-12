@@ -141,7 +141,7 @@ function LevelStatus({
   );
 
   const handleUpdatePosition = (percentComplete) => {
-    if (percentComplete) {
+    if (percentComplete !== false) {
       const moduleNumber = getNormalisedModuleNumber(currentModule);
       let newPosition;
       if (parseInt(percentComplete) === 100) {
@@ -160,8 +160,8 @@ function LevelStatus({
   const triggerCreatePosition = async (newPosition) => {
     console.log('creating position');
     const variables = {
-      subjectId: subjectId,
-      pupilId: parseInt(pupil.id),
+      subject: subjectId,
+      pupil: parseInt(pupil.id),
       value: parseFloat(newPosition),
     };
     const position = await createPosition(gqlClient, variables);
@@ -173,9 +173,7 @@ function LevelStatus({
   const triggerUpdatePosition = async (newPosition) => {
     console.log('updating position');
     const variables = {
-      positionId: currentPositionId,
-      subjectId: subjectId,
-      pupilId: parseInt(pupil.id),
+      position: currentPositionId,
       value: parseFloat(newPosition),
     };
     const position = await updatePosition(gqlClient, variables);
@@ -184,8 +182,8 @@ function LevelStatus({
   };
 
   useEffect(() => {
-    console.log(currentPosition)
-  }, [currentPosition])
+    handleUpdatePosition(actualPercentComplete);
+  }, [actualPercentComplete]);
 
   useEffect(() => {
     setReadyToShow(true);

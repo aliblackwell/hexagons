@@ -144,21 +144,7 @@ const updateLevelQuery = gql`
   }
 `;
 
-const updatePositionQuery = gql`
-  mutation updatePosition($subjectId: ID!, $pupilId: ID!, $value: Float!, $positionId: ID!) {
-    updatePosition(
-      input: {
-        where: { id: $positionId, subject: $subjectId, pupil: $pupilId }
-        data: { value: $value }
-      }
-    ) {
-      position {
-        id
-        value
-      }
-    }
-  }
-`;
+
 
 const getCompetencies = gql`
   query getCompetencies($pupilId: ID!, $levelId: [ID!]) {
@@ -286,8 +272,31 @@ const createLevelQuery = gql`
 `;
 
 const createPositionQuery = gql`
-  mutation createPosition($pupilId: ID!, $subjectId: ID!, $value: Float!) {
-    createPosition(input: { data: { pupil: $pupilId, subject: $subjectId, value: $value } }) {
+  mutation createPosition($pupil: ID!, $subject: ID!, $value: Float!) {
+    createPosition(input: { data: { pupil: $pupil, subject: $subject, value: $value } }) {
+      position {
+        id
+        value
+        subject {
+          name
+        }
+        pupil {
+          id
+        }
+
+      }
+    }
+  }
+`;
+
+const updatePositionQuery = gql`
+  mutation updatePosition($value: Float!, $position: ID!) {
+    updatePosition(
+      input: {
+        where: { id: $position }
+        data: { value: $value }
+      }
+    ) {
       position {
         id
         value

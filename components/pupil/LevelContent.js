@@ -16,6 +16,7 @@ function LevelContent({
   setGuidanceActive,
   guidanceActive,
   user,
+  currentPosition,
   levelTitle
 }) {
 
@@ -42,6 +43,7 @@ function LevelContent({
           edSubjectId={edSubjectId}
           getLevelVars={{ pupilId: parseInt(pupil.id), subjectId: currentModule.isEd ? edSubjectId : subjectId, moduleId: parseInt(currentModule.id) }}
           setGuidanceActive={setGuidanceActive}
+          currentPosition={currentPosition}
         />
       </CustomSuspense>
       <CustomSuspense message="Loading tiles">
