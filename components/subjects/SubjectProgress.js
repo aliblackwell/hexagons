@@ -80,7 +80,7 @@ function SubjectProgressDefault({
   let levelNumber = 1;
 
   if (level) {
-    levelNumber = getNormalisedModuleNumber(level);
+    levelNumber = getNormalisedModuleNumber(level.module);
     normalisedLabel = `S${levelNumber}`;
     if (isRainbowAwards && !isPupilCard) {
       label = getRainbowLabel(parseInt(level.module.order) - 1);

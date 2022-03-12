@@ -1,4 +1,4 @@
-export default function getNormalisedModuleNumber(level) {
+export default function getNormalisedModuleNumber(module) {
   // turn from 1-6,1-6 to 1-12
-  return level.module.level === 'stage' ? level.module.order + 6 : level.module.order;
+  return module.level === 'stage' ? module.order + 6 : module.order;
 }

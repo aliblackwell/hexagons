@@ -64,7 +64,7 @@ function GetAllPupilsAndSubjects({ user, groupName, pupilsByGroupVariables, allS
 
   function getModuleLabel(level) {
     // Below returns e.g. 1.45, 7.45
-    let normalisedModuleNumber = getNormalisedModuleNumber(level);
+    let normalisedModuleNumber = getNormalisedModuleNumber(level.module);
     let label = `${normalisedModuleNumber}.${level.percentComplete}`;
     if (parseInt(level.percentComplete) === 100) {
       label = normalisedModuleNumber + 1; // round up to next level if at 100% complete

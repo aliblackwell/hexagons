@@ -1,7 +1,10 @@
 import PropTypes from 'prop-types';
 import { Typography, Box, Button, Fade } from '@mui/material';
 import createLevel from '../forms/handlers/createLevel';
+import createPosition from '../forms/handlers/createPosition';
 import updateLevel from '../forms/handlers/updateLevel';
+import updatePosition from '../forms/handlers/updatePosiiton';
+import getNormalisedModuleNumber from '../../utils/getNormalisedModuleNumber';
 import { useEffect, useState, useCallback, useContext } from 'react';
 import LinearProgress from '@mui/material/LinearProgress';
 import makeStyles from '@mui/styles/makeStyles';
@@ -87,6 +90,7 @@ function LevelStatus({
   setGlobalGuidanceActive,
   currentModule,
   subjectId,
+  currentPosition,
   edSubjectId,
   pupil,
   competencies,
@@ -100,6 +104,9 @@ function LevelStatus({
   const classes = useStyles();
   const [visiblePercentComplete, setVisiblePercentComplete] = useState(0);
   const [actualPercentComplete, setActualPercentComplete] = useState(0);
+  const [currentPositionId, setCurrentPositionId] = useState(
+    currentPosition ? currentPosition.id : 0
+  );
 
   const [status, setStatus] = useState('notstarted');
   const [readyToShow, setReadyToShow] = useState(false);
@@ -133,11 +140,60 @@ function LevelStatus({
     [setLevelId, setStatus, levelId]
   );
 
+  const handleUpdatePosition = (percentComplete) => {
+    if (percentComplete) {
+      const moduleNumber = getNormalisedModuleNumber(currentModule);
+      let newPosition;
+      if (parseInt(percentComplete) === 100) {
+        newPosition = moduleNumber + 1; // round up to next level if at 100% complete
+      } else {
+        newPosition = `${moduleNumber}.${percentComplete}`;
+      }
+      if (currentPositionId !== 0) {
+        triggerUpdatePosition(newPosition);
+      } else {
+        triggerCreatePosition(newPosition);
+      }
+    }
+  };
+
+  const triggerCreatePosition = async (newPosition) => {
+    console.log('creating position');
+    const variables = {
+      subjectId: subjectId,
+      pupilId: parseInt(pupil.id),
+      value: parseFloat(newPosition),
+    };
+    const position = await createPosition(gqlClient, variables);
+    setCurrentPositionId(position.id);
+    console.log('created position!');
+    console.log(position);
+  };
+
+  const triggerUpdatePosition = async (newPosition) => {
+    console.log('updating position');
+    const variables = {
+      positionId: currentPositionId,
+      subjectId: subjectId,
+      pupilId: parseInt(pupil.id),
+      value: parseFloat(newPosition),
+    };
+    const position = await updatePosition(gqlClient, variables);
+    console.log('updated position');
+    console.log(position);
+  };
+
+  useEffect(() => {
+    console.log(currentPosition)
+  }, [currentPosition])
+
   useEffect(() => {
     setReadyToShow(true);
     const percentComplete = getPercentComplete(thisLevelCompetencies, currentModule.capabilities);
+
     setActualPercentComplete(percentComplete);
     const percentCompleteWithShortcuts = status === 'complete' ? 100 : percentComplete;
+    handleUpdatePosition(percentCompleteWithShortcuts);
     setVisiblePercentComplete(percentCompleteWithShortcuts);
     if (percentComplete === 100) {
       completeStep();
