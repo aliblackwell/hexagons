@@ -31,8 +31,6 @@ function a11yProps(index) {
 }
 
 function StagesTabs({ isRa, modules, startingLevel,  pupil, ...other }) {
- 
-  
 
   const [tabValue, setTabValue] = useState(0);
   

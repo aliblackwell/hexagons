@@ -140,22 +140,25 @@ function LevelStatus({
     [setLevelId, setStatus, levelId]
   );
 
-  const handleUpdatePosition = (percentComplete) => {
-    if (percentComplete !== false) {
-      const moduleNumber = getNormalisedModuleNumber(currentModule);
-      let newPosition;
-      if (parseInt(percentComplete) === 100) {
-        newPosition = moduleNumber + 1; // round up to next level if at 100% complete
-      } else {
-        newPosition = `${moduleNumber}.${percentComplete}`;
+  const handleUpdatePosition = useCallback(
+    (percentComplete) => {
+      if (percentComplete !== false) {
+        const moduleNumber = getNormalisedModuleNumber(currentModule);
+        let newPosition;
+        if (parseInt(percentComplete) === 100) {
+          newPosition = moduleNumber + 1; // round up to next level if at 100% complete
+        } else {
+          newPosition = `${moduleNumber}.${percentComplete}`;
+        }
+        if (currentPositionId !== 0) {
+          triggerUpdatePosition(newPosition);
+        } else {
+          triggerCreatePosition(newPosition);
+        }
       }
-      if (currentPositionId !== 0) {
-        triggerUpdatePosition(newPosition);
-      } else {
-        triggerCreatePosition(newPosition);
-      }
-    }
-  };
+    },
+    [currentModule]
+  );
 
   const triggerCreatePosition = async (newPosition) => {
     console.log('creating position');
@@ -166,7 +169,6 @@ function LevelStatus({
     };
     const position = await createPosition(gqlClient, variables);
     setCurrentPositionId(position.id);
-    console.log('created position!');
     console.log(position);
   };
 
@@ -177,8 +179,7 @@ function LevelStatus({
       value: parseFloat(newPosition),
     };
     const position = await updatePosition(gqlClient, variables);
-    console.log('updated position');
-    console.log(position);
+
   };
 
   useEffect(() => {

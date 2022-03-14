@@ -18,6 +18,7 @@ const styles = makeStyles((theme) => ({
 
 function SetPupilSubjectLevel({ subjectName, subjectSlug, subjectId, excludeED, pupil, ...other }) {
   const classes = styles();
+
   let isRa = false;
 
   const { pathname } = useRouter();
